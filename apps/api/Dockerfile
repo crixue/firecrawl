@@ -1,3 +1,5 @@
+# docker build -t --build-arg BUILDKIT_INLINE_CACHE=1 firecrawl .
+# 使用该 Dockerfile 构建 firecrawl/firecrawl镜像
 FROM node:22-slim AS base
 
 ENV PNPM_HOME="/pnpm"
@@ -46,7 +48,9 @@ COPY --from=rust-base /app/sharedLibs/html-transformer/target/release/libhtml_tr
 COPY --from=rust-base /app/sharedLibs/pdf-parser/target/release/libpdf_parser.so /app/sharedLibs/pdf-parser/target/release/libpdf_parser.so
 
 # Install git
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/* && corepack enable && corepack prepare pnpm@latest --activate
+
+RUN pnpm --version
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 8080

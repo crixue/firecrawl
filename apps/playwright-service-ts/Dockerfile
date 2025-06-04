@@ -1,3 +1,4 @@
+# docker build -t playwright-service .
 FROM node:18-slim
 
 WORKDIR /usr/src/app
